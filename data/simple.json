@@ -1,0 +1,21 @@
+{
+  "name": "simple-vfs",
+  "root": {
+    "type": "dir",
+    "children": {
+      "hello.txt": {
+        "type": "file",
+        "data": "SGVsbG8gZnJvbSBzaW1wbGUgVkZTIQo="
+      },
+      "docs": {
+        "type": "dir",
+        "children": {
+          "one.txt": {
+            "type": "file",
+            "data": "Rmlyc3QgZmlsZQpTZWNvbmQgbGluZQo="
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+# Этап 3. Загрузка VFS из JSON. Команды ls/cd пока заглушки.
+ls
+cd docs
+unknown-command

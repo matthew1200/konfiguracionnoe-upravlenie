@@ -6,6 +6,8 @@ import shlex
 from dataclasses import dataclass
 from pathlib import Path
 
+from .vfs import VFS, VFSError
+
 
 class ShellError(Exception):
     """Ошибка разбора либо исполнения команды."""
@@ -43,8 +45,13 @@ def parse_command(line, environ=None):
 class Shell:
     """Эмулятор команд. На первом этапе команды являются заглушками."""
 
-    def __init__(self, **_unused):
-        self.name = "demo-vfs"
+    def __init__(self, vfs_path=None):
+        default = Path(__file__).resolve().parent.parent / "data/nested.json"
+        try:
+            self.vfs = VFS(vfs_path or default)
+        except VFSError as exc:
+            raise ShellError(str(exc)) from exc
+        self.name = self.vfs.name
         self.cwd = "/"
 
     def execute(self, line):

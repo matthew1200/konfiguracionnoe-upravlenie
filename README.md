@@ -16,3 +16,7 @@ python -m unittest discover -s tests -v
 параметров в GUI, стартовые сценарии с комментариями `#` и выводом ошибок.
 Вызовы тестовых сценариев из Windows: `scripts\\run_config.bat` и
 `scripts\\run_script_only.bat`.
+
+Этап 3: виртуальная файловая система из JSON-файлов `data/minimal.json`,
+`data/simple.json`, `data/nested.json`. Двоичные данные кодируются base64;
+загрузка происходит в память, исходный JSON не модифицируется.

@@ -4,7 +4,7 @@ import argparse
 import tkinter as tk
 
 from .gui import TerminalApp
-from .shell import Shell
+from .shell import Shell, ShellError
 from .startup import run_script
 
 
@@ -19,8 +19,12 @@ def parse_args(argv=None):
 def main(argv=None):
     """Открыть GUI и при наличии выполнить стартовый скрипт."""
     args = parse_args(argv)
+    try:
+        shell = Shell(args.vfs)
+    except ShellError as exc:
+        raise SystemExit(f"Ошибка VFS: {exc}") from exc
     root = tk.Tk()
-    app = TerminalApp(root, Shell())
+    app = TerminalApp(root, shell)
     app.write(f"Конфигурация: VFS={args.vfs}; script={args.script}\n")
     if args.script:
         root.after(0, lambda: run_script(app, args.script))

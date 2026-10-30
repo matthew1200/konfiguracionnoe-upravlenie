@@ -1,0 +1,58 @@
+{
+  "name": "study-vfs",
+  "root": {
+    "type": "dir",
+    "children": {
+      "hello.txt": {
+        "type": "file",
+        "data": "V2VsY29tZSB0byB2YXJpYW50IDIwIQo="
+      },
+      "docs": {
+        "type": "dir",
+        "children": {
+          "notes": {
+            "type": "dir",
+            "children": {
+              "lines.txt": {
+                "type": "file",
+                "data": "Zmlyc3QKc2Vjb25kCnRoaXJkCg=="
+              },
+              "archive": {
+                "type": "dir",
+                "children": {
+                  "report.txt": {
+                    "type": "file",
+                    "data": "UmVwb3J0IDIwMjYKTGluZSB0d28K"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "projects": {
+        "type": "dir",
+        "children": {
+          "2026": {
+            "type": "dir",
+            "children": {
+              "task.txt": {
+                "type": "file",
+                "data": "VW5peCBzaGVsbCBlbXVsYXRvcgo="
+              }
+            }
+          }
+        }
+      },
+      "pictures": {
+        "type": "dir",
+        "children": {
+          "logo.bin": {
+            "type": "file",
+            "data": "AAF//w=="
+          }
+        }
+      }
+    }
+  }
+}
