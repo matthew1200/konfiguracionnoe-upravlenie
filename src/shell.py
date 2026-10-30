@@ -1,9 +1,10 @@
-"""Этап 1: простой REPL с командами-заглушками."""
+"""Интерпретатор ограниченного набора UNIX-команд для учебной VFS."""
 
 import os
 import re
 import shlex
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
 from .vfs import VFS, VFSError
@@ -15,7 +16,7 @@ class ShellError(Exception):
 
 @dataclass
 class Result:
-    """Результат выполнения команды для графического интерфейса."""
+    """Результат выполнения для GUI-терминала."""
 
     output: str = ""
     clear: bool = False
@@ -23,7 +24,7 @@ class Result:
 
 
 def parse_command(line, environ=None):
-    """Разделить строку и раскрыть переменные реальной ОС."""
+    """Разделить строку с кавычками и раскрыть переменные окружения."""
     values = dict(os.environ) if environ is None else dict(environ)
     values.setdefault("HOME", str(Path.home()))
     try:
@@ -43,7 +44,7 @@ def parse_command(line, environ=None):
 
 
 class Shell:
-    """Эмулятор команд. На первом этапе команды являются заглушками."""
+    """Команды работают только с загруженным в память деревом VFS."""
 
     def __init__(self, vfs_path=None):
         default = Path(__file__).resolve().parent.parent / "data/nested.json"
@@ -55,19 +56,76 @@ class Shell:
         self.cwd = "/"
 
     def execute(self, line):
-        """Разобрать и выполнить пользовательскую строку."""
+        """Выполнить команду и вернуть вывод и управляющие флаги."""
         args = parse_command(line)
         if not args:
             return Result()
-        command, *arguments = args
-        if command == "exit":
-            if arguments:
-                raise ShellError("exit: аргументы не допускаются")
-            return Result(exit=True)
-        if command in {"ls", "cd"}:
-            if len(arguments) > 1:
-                raise ShellError(f"{command}: слишком много аргументов")
-            return Result(f"Заглушка {command}: аргументы = {arguments}")
-        if command == "echo":
-            return Result(" ".join(arguments))
-        raise ShellError(f"Неизвестная команда: {command}")
+        name, *arguments = args
+        handlers = {
+            "ls": self.do_ls, "cd": self.do_cd,
+            "tac": self.do_tac, "date": self.do_date,
+            "clear": self.do_clear, "echo": self.do_echo,
+            "exit": self.do_exit,
+        }
+        if name not in handlers:
+            raise ShellError(f"Неизвестная команда: {name}")
+        try:
+            return handlers[name](arguments)
+        except VFSError as exc:
+            raise ShellError(str(exc)) from exc
+
+    def do_ls(self, args):
+        """Показать содержимое каталога или имя файла."""
+        if len(args) > 1:
+            raise ShellError("ls: ожидается не более одного пути")
+        path = args[0] if args else "."
+        return Result("\n".join(self.vfs.list_dir(path, self.cwd)))
+
+    def do_cd(self, args):
+        """Перейти в указанный каталог (без аргумента — в корень)."""
+        if len(args) > 1:
+            raise ShellError("cd: ожидается не более одного пути")
+        path = args[0] if args else "/"
+        self.cwd = self.vfs.change_dir(path, self.cwd)
+        return Result()
+
+    def do_tac(self, args):
+        """Вывести строки файла в обратном порядке."""
+        if not args:
+            raise ShellError("tac: укажите файл")
+        chunks = []
+        for path in args:
+            raw = self.vfs.read_file(path, self.cwd)
+            try:
+                lines = raw.decode("utf-8").splitlines()
+            except UnicodeDecodeError as exc:
+                raise ShellError(f"tac: файл {path} не текстовый UTF-8") from exc
+            chunks.extend(reversed(lines))
+        return Result("\n".join(chunks))
+
+    def do_date(self, args):
+        """Показать локальную дату; поддержать формат +FORMAT."""
+        if len(args) > 1 or (args and not args[0].startswith("+")):
+            raise ShellError("date: допустим необязательный аргумент +FORMAT")
+        now = datetime.now().astimezone()
+        fmt = args[0][1:] if args else "%Y-%m-%d %H:%M:%S %Z"
+        try:
+            return Result(now.strftime(fmt))
+        except ValueError as exc:
+            raise ShellError(f"date: неверный формат: {exc}") from exc
+
+    def do_clear(self, args):
+        """Очистить экран GUI без изменения VFS."""
+        if args:
+            raise ShellError("clear: аргументы не допускаются")
+        return Result(clear=True)
+
+    def do_echo(self, args):
+        """Дополнительная команда: показать разбор переменных окружения."""
+        return Result(" ".join(args))
+
+    def do_exit(self, args):
+        """Закрыть приложение."""
+        if args:
+            raise ShellError("exit: аргументы не допускаются")
+        return Result(exit=True)

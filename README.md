@@ -20,3 +20,6 @@ python -m unittest discover -s tests -v
 Этап 3: виртуальная файловая система из JSON-файлов `data/minimal.json`,
 `data/simple.json`, `data/nested.json`. Двоичные данные кодируются base64;
 загрузка происходит в память, исходный JSON не модифицируется.
+
+Этап 4: рабочие `ls`, `cd`, `tac`, `date`, `clear`. Для удобства добавлена
+вспомогательная `echo`, позволяющая увидеть раскрытие `$HOME`.

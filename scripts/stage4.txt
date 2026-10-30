@@ -1,0 +1,21 @@
+# Этап 4. Проверка всех основных команд.
+clear
+# Начальное состояние
+ls
+ls docs
+cd docs
+ls
+cd notes
+ls
+cd ..
+cd ..
+tac docs/notes/lines.txt
+date
+date +%Y-%m-%d
+# Демонстрация настоящей переменной ОС
+echo "$HOME"
+# Ошибки не должны обрушать GUI
+ls /absent
+cd hello.txt
+tac /absent
+not-a-command
