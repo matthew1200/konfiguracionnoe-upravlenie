@@ -11,3 +11,8 @@
 python -m src.main
 python -m unittest discover -s tests -v
 ```
+
+Этап 2: параметры запуска `--vfs` и `--script`, отладочное отображение
+параметров в GUI, стартовые сценарии с комментариями `#` и выводом ошибок.
+Вызовы тестовых сценариев из Windows: `scripts\\run_config.bat` и
+`scripts\\run_script_only.bat`.

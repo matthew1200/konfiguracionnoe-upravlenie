@@ -1,0 +1,5 @@
+# Этап 1. Заглушки и ошибки.
+ls
+cd test
+ls too many arguments
+unknown
