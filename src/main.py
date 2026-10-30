@@ -10,7 +10,9 @@ from .startup import run_script
 
 def parse_args(argv=None):
     """Прочитать настройки командной строки."""
-    parser = argparse.ArgumentParser(description="GUI UNIX-эмулятор, вариант 20")
+    parser = argparse.ArgumentParser(
+        description="GUI UNIX-эмулятор, вариант 20",
+    )
     parser.add_argument("--vfs", help="Путь к файлу виртуальной ФС (JSON)")
     parser.add_argument("--script", help="Путь к стартовому скрипту")
     return parser.parse_args(argv)

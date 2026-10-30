@@ -65,7 +65,7 @@ class Shell:
             "ls": self.do_ls, "cd": self.do_cd,
             "tac": self.do_tac, "date": self.do_date,
             "clear": self.do_clear, "echo": self.do_echo,
-            "exit": self.do_exit,
+            "exit": self.do_exit, "cp": self.do_cp,
         }
         if name not in handlers:
             raise ShellError(f"Неизвестная команда: {name}")
@@ -99,7 +99,9 @@ class Shell:
             try:
                 lines = raw.decode("utf-8").splitlines()
             except UnicodeDecodeError as exc:
-                raise ShellError(f"tac: файл {path} не текстовый UTF-8") from exc
+                raise ShellError(
+                    f"tac: файл {path} не текстовый UTF-8",
+                ) from exc
             chunks.extend(reversed(lines))
         return Result("\n".join(chunks))
 
@@ -129,3 +131,14 @@ class Shell:
         if args:
             raise ShellError("exit: аргументы не допускаются")
         return Result(exit=True)
+
+    def do_cp(self, args):
+        """Копировать файл; для каталогов требуется флаг -r."""
+        recursive = False
+        if args and args[0] == "-r":
+            recursive = True
+            args = args[1:]
+        if len(args) != 2:
+            raise ShellError("cp: формат cp [-r] ИСТОЧНИК НАЗНАЧЕНИЕ")
+        self.vfs.copy(args[0], args[1], self.cwd, recursive=recursive)
+        return Result()

@@ -1,0 +1,26 @@
+# Полный сценарий для проверки варианта 20.
+# Вызов: python -m src.main --vfs data/nested.json --script scripts/startup_full.txt
+clear
+ls
+cd docs
+ls
+cd notes
+tac lines.txt
+cd ../..
+date
+date +%Y-%m-%d
+echo "Current host HOME: $HOME"
+cp hello.txt backup.txt
+ls
+cp docs/notes/lines.txt projects/
+ls projects
+cp -r docs backup-docs
+ls backup-docs/notes/archive
+# Ниже проверяются сообщения об ошибках.
+unknown-command
+ls /does-not-exist
+cd hello.txt
+cp docs without-r
+cp hello.txt
+# Последняя строка правильная: ошибки не должны прерывать скрипт.
+ls

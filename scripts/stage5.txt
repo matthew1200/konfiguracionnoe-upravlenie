@@ -1,0 +1,14 @@
+# Этап 5. Копирование файлов только внутри оперативной памяти.
+ls
+cp hello.txt copied.txt
+ls
+tac copied.txt
+cp docs/notes/lines.txt projects/
+ls projects
+cp -r docs documents-copy
+ls
+ls documents-copy/notes/archive
+# Попытки ошибок: каталог без -r, неверные аргументы.
+cp docs backup
+cp nonexistent newfile
+cp hello.txt

@@ -37,11 +37,14 @@ class TerminalApp:
             bottom, bg="#303741", fg="#f8fafc", insertbackground="#fff",
             font=("Consolas", 11), relief="flat",
         )
-        self.input.pack(side="left", expand=True, fill="x", padx=(8, 0), ipady=6)
+        self.input.pack(
+            side="left", expand=True, fill="x", padx=(8, 0), ipady=6,
+        )
         self.input.bind("<Return>", self.on_enter)
         self.update_prompt()
         self.write("Учебный UNIX-эмулятор (вариант 20).\n")
         self.input.focus_set()
+        self.closing = False
 
     def update_prompt(self):
         """Обновить видимое приглашение к вводу."""
@@ -72,6 +75,7 @@ class TerminalApp:
             self.write(result.output.rstrip("\n") + "\n")
         self.update_prompt()
         if result.exit:
+            self.closing = True
             self.root.after_idle(self.root.destroy)
         return True
 

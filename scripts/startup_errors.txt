@@ -1,0 +1,8 @@
+# Специальный файл для демонстрации обработки ошибок.
+not-a-command
+ls missing-directory
+cd hello.txt
+tac pictures/logo.bin
+cp docs should-fail
+cp only-one-argument
+ls

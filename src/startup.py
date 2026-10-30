@@ -10,7 +10,9 @@ def read_commands(filename):
     try:
         text = Path(filename).read_text(encoding="utf-8-sig")
     except (OSError, UnicodeError) as exc:
-        raise ShellError(f"Не удалось прочитать скрипт {filename}: {exc}") from exc
+        raise ShellError(
+            f"Не удалось прочитать скрипт {filename}: {exc}",
+        ) from exc
     for number, line in enumerate(text.splitlines(), 1):
         stripped = line.strip()
         if not stripped or stripped.startswith("#"):
@@ -25,5 +27,7 @@ def run_script(app, filename):
         for number, line in read_commands(filename):
             if not app.run_line(line):
                 app.write(f"Ошибка в скрипте, строка {number}.\n")
+            if app.closing:
+                break
     except ShellError as exc:
         app.write(f"Ошибка стартового скрипта: {exc}\n")
